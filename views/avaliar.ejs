@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Jurimetria</title>
+
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="/assets/fontawesome-free/css/all.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="/assets/css/adminlte.min.css">
+</head>
+
+<body class="sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed sidebar-collapse">
+  <div class="wrapper">
+
+    <!-- Navbar -->
+    <%- include('partials/navbar') -%>
+    <!-- /.navbar -->
+
+    <!-- Main Sidebar Container -->
+    <%- include('partials/sidebar') %>
+
+    <div class="content-wrapper">
+      <!-- Content Header (Page header) -->
+      <div class="content-header">
+        <div class="container-fluid">
+          <div class="row mb-2">
+            <div class="col-sm-6">
+              <h1 class="m-0">Avaliar decisões</h1>
+            </div>
+            <div class="col-sm-6">
+              <ol class="breadcrumb float-sm-right">
+                <li class="breadcrumb-item active">Início</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- /.content-header -->
+
+      <!-- Main content -->
+      <div class="content">
+        <div class="container-fluid">
+
+          <div class="row">
+            <div class="col-md-3">
+
+              <div class="card card-primary card-outline">
+                <div class="card-body box-profile">
+                  <!-- show first object in array sentences with ejs -->
+                  <p class="ask">
+                    Nesse caso, houve reparação ao erário?
+                  </p>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <form method="post" action="/gostei">
+                        <% if(sentences.length > 0) { %>
+                        <input type="hidden" name="id" value="<%- sentences[0].id %>">
+                        <button type="submit" class="btn btn-block btn-outline-success btn-sm">Gostei</button>
+                        <% } %>
+                      </form>
+                    </div>
+                    <div class="col-md-6">
+                      <form method="post" action="/nao-gostei">
+                        <% if(sentences.length > 0) { %>
+
+                          <input type="hidden" name="id" value="<%- sentences[0].id %>">
+
+                          <button type="submit" class="btn btn-block btn-outline-danger btn-sm">Não gostei</button>
+                        <% } %>
+                      </form>
+                    </div>
+                    <div class="col-md-12">
+                      <form method="post" action="/nao-se-aplica">
+                        <% if(sentences.length > 0) { %>
+
+                          <input type="hidden" name="id" value="<%- sentences[0].id %>">
+
+                          <button type="submit" class="btn btn-block btn-outline-primary btn-sm mt-3">Não se aplica</button>
+                        <% } %>
+                      </form>
+                    </div>
+                  </div>
+                </div>  
+
+              </div>
+
+            </div>
+
+            <div class="col-md-9">
+              <div class="card">
+
+                <div class="card-body">
+                  <%- sentences.length > 0 ? sentences[0].teor : 'Não há mais sentenças para avaliar' %>
+                  
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </div><!-- /.container-fluid -->
+      </div>
+      <!-- /.content -->
+    </div>
+
+    <%- include('partials/hidesidebar') -%>
+
+    <%- include('partials/footer') -%>
+  </div>
+  <!-- ./wrapper -->
+
+  <!-- jQuery -->
+  <script src="assets/jquery/jquery.min.js"></script>
+  <!-- Bootstrap 4 -->
+  <script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <!-- AdminLTE App -->
+  <script src="assets/js/adminlte.min.js"></script>
+  <script src="assets/js/main.js"></script>
+
+</body>
+
+</html>

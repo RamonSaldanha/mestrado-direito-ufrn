@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Jurimetria - reclamações (consumidor.gov)</title>
+
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="/assets/fontawesome-free/css/all.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="/assets/css/adminlte.min.css">
+  <link rel="stylesheet" href="/assets/datatables-bs4/css/dataTables.bootstrap4.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css" integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg=" crossorigin="anonymous" />
+
+  <style>
+    option {
+      white-space: normal !important;
+    }
+  </style>
+</head>
+
+<body class="sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed sidebar-collapse">
+  <div class="wrapper">
+      
+    <!-- Navbar -->
+    <%- include('partials/navbar') -%>
+    <!-- /.navbar -->
+
+    <!-- Main Sidebar Container -->
+    <%- include('partials/sidebar') %>
+
+    <div class="content-wrapper">
+      <!-- Content Header (Page header) -->
+      <div class="content-header">
+        <div class="container-fluid">
+          <div class="row mb-2">
+            <div class="col-sm-6">
+              <h1 class="m-0">Associar reclamações a práticas abusivas</h1>
+            </div>
+            <div class="col-sm-6">
+              <ol class="breadcrumb float-sm-right">
+                <li class="breadcrumb-item active">Início</li>
+                <!-- <li class="breadcrumb-item active">Starter Page</li> -->
+              </ol>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- /.content-header -->
+
+      <!-- Main content -->
+      <div class="content">
+        <div class="container-fluid">
+          <h5 class="font-weight-bold"><%= reclamacoes.assunto %></h5>
+          <form action="/associar-reclamacao-legislacao" method="POST">
+            <div class="d-flex">
+              <div>
+                <input type="hidden" name="reclamacaoId" value="<%= reclamacoes.id %>">
+                <select id="legislacaoId" style="width: 600px;"  autocomplete="false"name="legislacaoId" multiple placeholder="Selecione" >
+                  <% legislacoes.forEach(legislacao => { %>
+                    <option value="<%= legislacao.id %>"><%= legislacao.artigo %> - <%= legislacao.lei %></option>
+                  <% }) %>
+                </select>
+              </div>
+            </div>
+
+            <div class="d-flex mt-4">
+              <button type="submit" class="btn btn-primary">Associar</button>
+              <a href="/reclamacao/<%= reclamacoes.id %>/concluir" onclick="return confirm('Você tem certeza que deseja acessar este link?')" class="btn btn-outline-success ml-4"><i class="fas fa-check"></i> Concluído</a>
+            </div>
+            
+          </form>
+
+
+          <div class="card mt-4" >
+            <ul class="list-group list-group-flush">
+              <% reclamacoes.Legislacaos.forEach(leg => { %>
+                <li class="list-group-item">
+                  <%= leg.artigo %>
+                  <a href="/reclamacao/<%= reclamacoes.id %>/legislacao/<%= leg.id %>" 
+                     onclick="event.preventDefault(); 
+                     if(confirm('Você realmente quer remover esta associação?')) 
+                       document.getElementById('delete-form-<%= leg.id %>').submit();">
+                    Remover
+                  </a>
+                  <form id="delete-form-<%= leg.id %>" 
+                        action="/reclamacao/<%= reclamacoes.id %>/legislacao/<%= leg.id %>" 
+                        method="POST" 
+                        style="display: none;">
+                    <input type="hidden" name="_method" value="DELETE">
+                  </form>
+                </li>
+              <% }) %>
+            </ul>
+          </div>
+
+
+
+        </div><!-- /.container-fluid -->
+      </div>
+      <!-- /.content -->
+    </div>
+
+    <%- include('partials/hidesidebar') -%>
+
+    <%- include('partials/footer') -%>
+  </div>
+  <!-- ./wrapper -->
+    <!-- jQuery -->
+    <script src="assets/jquery/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <!-- Bootstrap 4 -->
+    <script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/datatables/jquery.dataTables.min.js"></script>
+    <script src="assets/datatables-bs4/dataTables.bootstrap4.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.3.6/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.print.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
+
+    <!-- AdminLTE App -->
+    <script src="assets/js/adminlte.min.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script>
+
+      $(document).ready(function() {
+        $('select').selectize({
+          labelField: 'title',
+          searchField: 'title',
+        });
+        // $('#tabelaReclamacoes').DataTable({
+        //   dom: 'Bfrtip',
+        //   pagination: true,
+        //   order: [[ 1, "desc" ]],
+        //   buttons: [
+        //     'copy', 'csv', 'excel', 'pdf', 'print'
+        //   ]
+        // });
+      });
+
+    </script>
+
+  </body>
+</html>
